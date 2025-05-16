@@ -6,22 +6,21 @@ on:
       - main
 
 jobs:
-  hello-job:
+  test-job:
     runs-on: ubuntu-latest
-    env:
-      MY_VARIABLE: "This is a variable"
     steps:
-      - name: Say Hello
-        run: echo "Hello, GitHub Actions!"
+      - name: Checkout du dépôt
+        uses: actions/checkout@v3
 
-      - name: Show the variable
-        run: echo 'La variable est ${{ env.MY_VARIABLE }}'
+      - name: Installer Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-      - name: Afficher le secret (ne sera pas visible)
-        run: echo "Secret reçu >> ${{ secrets.MY_SECRET }}"
+      - name: Installer les dépendances
+        run: npm ci
+        working-directory: node-app
 
-      - name: Créer le fichier hello.txt
-        run: echo "Hello world" > hello.txt
-
-      - name: Lire le contenu de hello.txt
-        run: cat hello.txt
+      - name: Lancer les tests
+        run: npm test
+        working-directory: node-app
